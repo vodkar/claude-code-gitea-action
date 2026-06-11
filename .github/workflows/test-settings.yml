@@ -19,7 +19,7 @@ jobs:
         with:
           prompt: |
             Use Bash to echo "Hello from settings test"
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY || secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           settings: |
             {
               "permissions": {
@@ -68,7 +68,7 @@ jobs:
         with:
           prompt: |
             Use Bash to echo "This should not work"
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY || secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           settings: |
             {
               "permissions": {
@@ -110,7 +110,7 @@ jobs:
         with:
           prompt: |
             Use Bash to echo "Hello from settings file test"
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY || secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           settings: "test-settings.json"
 
       - name: Verify echo worked
@@ -164,7 +164,7 @@ jobs:
         with:
           prompt: |
             Use Bash to echo "This should not work from file"
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY || secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           settings: "test-settings.json"
 
       - name: Verify echo was denied

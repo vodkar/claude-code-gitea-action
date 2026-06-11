@@ -14,16 +14,7 @@ const BASE_ARGS = ["--verbose", "--output-format", "stream-json"];
 
 export type ClaudeOptions = {
   claudeArgs?: string;
-  model?: string;
   pathToClaudeCodeExecutable?: string;
-  allowedTools?: string;
-  disallowedTools?: string;
-  maxTurns?: string;
-  mcpConfig?: string;
-  systemPrompt?: string;
-  appendSystemPrompt?: string;
-  claudeEnv?: string;
-  fallbackModel?: string;
 };
 
 type PreparedConfig = {

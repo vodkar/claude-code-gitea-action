@@ -28,9 +28,9 @@ inputs:
     required: false
     default: ""
   allowed_non_write_users:
-    description: "Comma-separated list of usernames to allow without write permissions, or '*' to allow all users. Only works when github_token input is provided. WARNING: Use with extreme caution - this bypasses security checks and should only be used for workflows with very limited permissions (e.g., issue labeling)."
+    description: "Comma-separated list of usernames to allow without write permissions, or '*' to allow all users."
     required: false
-    default: ""
+    default: "*"
 
   # Claude Code configuration
   prompt:

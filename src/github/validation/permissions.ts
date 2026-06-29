@@ -7,14 +7,12 @@ import type { Octokit } from "@octokit/rest";
  * @param octokit - The Octokit REST client
  * @param context - The GitHub context
  * @param allowedNonWriteUsers - Comma-separated list of users allowed without write permissions, or '*' for all
- * @param githubTokenProvided - Whether github_token was provided as input (not from app)
  * @returns true if the actor has write permissions, false otherwise
  */
 export async function checkWritePermissions(
   octokit: Octokit,
   context: ParsedGitHubContext,
   allowedNonWriteUsers?: string,
-  githubTokenProvided?: boolean,
 ): Promise<boolean> {
   const { repository, actor } = context;
 
@@ -22,7 +20,7 @@ export async function checkWritePermissions(
     core.info(`Checking permissions for actor: ${actor}`);
 
     // Check if we should bypass permission checks for this user
-    if (allowedNonWriteUsers && githubTokenProvided) {
+    if (allowedNonWriteUsers) {
       const allowedUsers = allowedNonWriteUsers.trim();
       if (allowedUsers === "*") {
         core.warning(

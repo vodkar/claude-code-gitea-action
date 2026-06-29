@@ -85,19 +85,34 @@ export async function setupGitHubToken(): Promise<string> {
       return providedToken;
     }
 
-    console.log("Requesting OIDC token...");
-    const oidcToken = await retryWithBackoff(() => getOidcToken());
-    console.log("OIDC token successfully obtained");
+    // OIDC is only available when the runner provides the request URL (GitHub Actions).
+    // Gitea / Act environments don't set this, so fall back to the workflow GITHUB_TOKEN.
+    if (process.env.ACTIONS_ID_TOKEN_REQUEST_URL) {
+      console.log("Requesting OIDC token...");
+      const oidcToken = await retryWithBackoff(() => getOidcToken());
+      console.log("OIDC token successfully obtained");
 
-    console.log("Exchanging OIDC token for app token...");
-    const appToken = await retryWithBackoff(() =>
-      exchangeForAppToken(oidcToken),
+      console.log("Exchanging OIDC token for app token...");
+      const appToken = await retryWithBackoff(() =>
+        exchangeForAppToken(oidcToken),
+      );
+      console.log("App token successfully obtained");
+
+      console.log("Using GITHUB_TOKEN from OIDC");
+      core.setOutput("GITHUB_TOKEN", appToken);
+      return appToken;
+    }
+
+    const workflowToken = process.env.GITHUB_TOKEN;
+    if (workflowToken) {
+      console.log("Using workflow GITHUB_TOKEN for authentication");
+      core.setOutput("GITHUB_TOKEN", workflowToken);
+      return workflowToken;
+    }
+
+    throw new Error(
+      "No GitHub token available. Please provide a `github_token` in the `with` section of the action in your workflow yml file, or ensure the workflow has access to GITHUB_TOKEN.",
     );
-    console.log("App token successfully obtained");
-
-    console.log("Using GITHUB_TOKEN from OIDC");
-    core.setOutput("GITHUB_TOKEN", appToken);
-    return appToken;
   } catch (error) {
     // Only set failed if we get here - workflow validation errors will exit(0) before this
     core.setFailed(
